@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Activity, FileText, Calendar, LogOut, User } from 'lucide-react'
+import { Activity, FileText, Calendar, LogOut, User, Database } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 export function Dashboard() {
@@ -34,7 +34,20 @@ export function Dashboard() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         <h2 className="text-2xl font-bold text-neutral-900 mb-6">Your Dashboard</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Link to="/data-sources" className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-teal-100 p-3 rounded-lg">
+                <Database className="w-6 h-6 text-teal-600" />
+              </div>
+              <h3 className="font-semibold text-neutral-900">Data Sources</h3>
+            </div>
+            <p className="text-neutral-600 mb-4">Connect EHR, wearables, and import health data</p>
+            <span className="text-teal-600 font-medium hover:text-teal-700">
+              Manage Sources →
+            </span>
+          </Link>
+
           <div className="bg-white p-6 rounded-xl shadow-sm">
             <div className="flex items-center gap-3 mb-4">
               <div className="bg-teal-100 p-3 rounded-lg">

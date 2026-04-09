@@ -44,12 +44,118 @@ export interface Subscription {
   plan: 'monthly' | 'annual' | null
 }
 
+// Data Source Types
+export interface EHRData {
+  connected: boolean
+  providerName: string | null
+  lastSynced: string | null
+  conditions: string[]
+  medications: string[]
+  labs: {
+    name: string
+    value: number
+    unit: string
+    date: string
+  }[]
+}
+
+export interface AppleHealthData {
+  connected: boolean
+  lastSynced: string | null
+  vitals: {
+    heartRate: number
+    steps: number
+    sleepHours: number
+    bloodPressureSystolic: number
+    bloodPressureDiastolic: number
+  }
+}
+
+export interface GoogleHealthData {
+  connected: boolean
+  lastSynced: string | null
+  vitals: {
+    heartRate: number
+    steps: number
+    sleepHours: number
+    bloodPressureSystolic: number
+    bloodPressureDiastolic: number
+  }
+}
+
+export interface ManualVitalsEntry {
+  id: string
+  timestamp: string
+  systolic: number | null
+  diastolic: number | null
+  heartRate: number | null
+  weight: number | null
+  height: number | null
+  bloodGlucose: number | null
+  spo2: number | null
+  temperature: number | null
+  respiratoryRate: number | null
+}
+
+export interface Document {
+  id: string
+  fileName: string
+  fileType: string
+  uploadedAt: string
+  extractedData: {
+    type: string
+    summary: string
+    rawText: string
+  }
+}
+
+export interface AudioRecording {
+  id: string
+  fileName: string
+  duration: number
+  recordedAt: string
+  transcript: string
+  summary: string
+}
+
+export interface TextNote {
+  id: string
+  rawText: string
+  createdAt: string
+  extracted: {
+    symptoms: string[]
+    duration: string | null
+    severity: string | null
+  }
+}
+
+export interface ScannedDocument {
+  id: string
+  fileName: string
+  fileType: string
+  scanMethod: 'camera' | 'upload'
+  uploadedAt: string
+  extractedData: {
+    type: string
+    summary: string
+    rawText: string
+  }
+}
+
 export interface MockDatabase {
   users: User[]
   currentUserId: string | null
   onboarding: OnboardingState
   vitals: Vitals
   subscription: Subscription
+  ehrData: EHRData
+  appleHealthData: AppleHealthData
+  googleHealthData: GoogleHealthData
+  manualVitals: ManualVitalsEntry[]
+  documents: Document[]
+  audioRecordings: AudioRecording[]
+  textNotes: TextNote[]
+  scannedDocuments: ScannedDocument[]
 }
 
 // Auth context types
