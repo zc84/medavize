@@ -1,0 +1,52 @@
+Medavize Brand Guidelines
+1. Brand Essence
+Medavize is a health-tech platform designed as a "companion app" for caregivers. The brand bridges the gap between complex medical data and the human experience of caregiving, focusing on simplifying the journey to wellness through technology.
+	•	Mission: To lighten the burden of caregiving, simplify care, and equip families with insights to provide better support.
+	•	Core Pillars: * Personalized: Tailored to the unique needs of the caregiver and patient.
+	◦	Simple: Removing technical and medical friction.
+	◦	Secure: Ensuring HIPAA-level data integrity and trust.
+
+2. Visual Identity
+Logo & Iconography
+	•	The Mark: The brand utilizes clean, modern medical and technological iconography (e.g., the HIPAA shield and stylized human-centric icons).
+	•	Philosophy: Minimalist designs that prioritize clarity over complexity.
+Color Palette
+Medavize uses a "Cool & Trustworthy" palette, typical of high-end health-tech, to evoke calmness and professionalism.
+	•	Primary Navy/Deep Blue: Represents authority, medical expertise, and security.
+	•	Teal/Soft Green: Represents healing, growth, and the "wellness" aspect of the brand.
+	•	White/Neutral Gray: Used for "breathability" and clean UI, reflecting a stress-free user experience.
+Typography
+	•	Headlines: Bold, clean sans-serif (reminiscent of modern fonts like Montserrat or Inter) to convey strength and modernity.
+	•	Body Text: Highly legible sans-serif with generous line spacing to ensure accessibility for caregivers who may be under stress or in low-light environments.
+
+3. Imagery & Photography
+Medavize moves away from clinical, cold medical imagery in favor of Lifestyle Caregiving.
+	•	Subject Matter: Multi-generational interactions (e.g., a daughter helping her father, a son assisting a mother with therapy).
+	•	Tone: Warm, natural lighting with a focus on connection and support rather than just the "illness."
+	•	Authenticity: Real-world scenarios that reflect the 27+ hours a week caregivers spend on care.
+
+4. Voice and Tone
+The Medavize voice is Empathetic, Authoritative, and Empowering.
+Attribute
+What it means
+Example
+Empathetic
+Validating the caregiver's struggle.
+"We see you. We know the hours you give."
+Simplified
+Breaking down complex medical jargon.
+"Health made simple. Data made powerful."
+Trustworthy
+Grounded in medical expertise.
+"Powered by trusted medical professionals."
+Tagline: Less time managing care. More time being there.
+
+5. Brand Positioning
+Medavize positions itself as a "Companion," not just a tool. It sits at the intersection of:
+	1	Caregiver Support: Recognizing the sacrifice of time and energy.
+	2	Medical Intelligence: Providing insights for doctor visits and new diagnoses.
+	3	Preventative Care: Moving from "reactive" to "proactive" management.
+
+6. Digital Presence & Social
+	•	Platforms: Active on LinkedIn, Instagram, Facebook, and YouTube.
+	•	Content Strategy: Sharing data-driven insights (e.g., the "59 million caregivers" statistic) paired with personal stories of wellness and simplicity.

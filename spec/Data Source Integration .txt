@@ -1,0 +1,216 @@
+Developer Tasks: Data Source Integration Tab
+Overview
+The Data Source Integration tab allows users to view, connect, and manage all health data sources as defined in the proposal. Each source will display its connection status, provide a "Connect" or "Add Data" action, and persist mock data to localStorage under the medavize_mock_db key.
+
+1. EHR Integration (Particle Health Mock)
+Description: Simulate connection to EHRs via Particle Health middleware. User searches for their healthcare provider and "authorizes" access, returning mock clinical data.
+Tasks:
+	•	Create EHR connection UI component:
+	◦	Display current connection status (Connected / Not Connected).
+	◦	If not connected: Show search input for provider name, a list of mock providers (e.g., "City General Hospital", "Valley Medical Center", "Springfield Clinic").
+	◦	On selecting a provider, show a mock OAuth-style consent screen with bullet points about data accessed (Conditions, Medications, Labs).
+	◦	On "Approve", store ehrConnected: true and populate ehrData in localStorage with a predefined mock FHIR bundle containing sample conditions, medications, and lab results.
+	•	Define mock EHR data structure:json"ehrData": {
+	•	  "connected": true,
+	•	  "providerName": "City General Hospital",
+	•	  "lastSynced": "2026-04-09T10:00:00Z",
+	•	  "conditions": ["Hypertension", "Type 2 Diabetes"],
+	•	  "medications": ["Lisinopril 10mg", "Metformin 500mg"],
+	•	  "labs": [
+	•	    { "name": "HbA1c", "value": 7.2, "unit": "%", "date": "2026-03-15" }
+	•	  ]
+	•	}
+	•	Add disconnect functionality: "Disconnect" button clears EHR data and sets connected: false after confirmation modal.
+	•	Add sync simulation: "Sync Now" button updates lastSynced timestamp and shows a loading spinner for 1 second.
+
+2. Apple Health Sync (Mock)
+Description: Simulate connection to Apple HealthKit. User grants permission to read vitals and activity data.
+Tasks:
+	•	Create Apple Health UI component:
+	◦	Show connection status with Apple Health logo.
+	◦	If not connected: "Connect Apple Health" button.
+	◦	On click, display a mock permission modal listing data types (Heart Rate, Steps, Sleep, Blood Pressure, etc.) with "Allow" and "Don't Allow".
+	◦	On "Allow", set appleHealthConnected: true and populate appleHealthData with mock vitals and activity.
+	•	Define mock Apple Health data structure:json"appleHealthData": {
+	•	  "connected": true,
+	•	  "lastSynced": "2026-04-09T10:00:00Z",
+	•	  "vitals": {
+	•	    "heartRate": 72,
+	•	    "steps": 8432,
+	•	    "sleepHours": 7.2,
+	•	    "bloodPressureSystolic": 118,
+	•	    "bloodPressureDiastolic": 78
+	•	  }
+	•	}
+	•	Add sync simulation: "Sync Now" button refreshes data with slightly varied values (simulate new readings) and updates timestamp.
+	•	Add disconnect: Clears data and sets connected: false.
+
+3. Google Health Sync (Mock)
+Description: Simulate connection to Android Health Connect. Functionally identical to Apple Health but with distinct branding.
+Tasks:
+	•	Create Google Health UI component:
+	◦	Similar structure to Apple Health, using Google Health / Health Connect branding.
+	◦	On "Connect", show mock permission modal.
+	◦	On approval, set googleHealthConnected: true and populate googleHealthData with similar mock vitals/activity.
+	•	Define mock Google Health data structure:json"googleHealthData": {
+	•	  "connected": true,
+	•	  "lastSynced": "2026-04-09T10:00:00Z",
+	•	  "vitals": {
+	•	    "heartRate": 68,
+	•	    "steps": 10245,
+	•	    "sleepHours": 6.8,
+	•	    "bloodPressureSystolic": 122,
+	•	    "bloodPressureDiastolic": 80
+	•	  }
+	•	}
+	•	Add sync and disconnect functionality.
+
+4. Manual Entry of Vitals
+Description: Allow user to manually input vitals via a form. Data persists to localStorage and merges with other vitals sources.
+Tasks:
+	•	Create manual vitals entry form:
+	◦	Fields: Blood Pressure (Systolic / Diastolic), Heart Rate, Temperature, Weight, Height, Blood Glucose, SpO2, Respiratory Rate.
+	◦	Each field with unit label and validation against clinical ranges.
+	◦	"Save" button stores entry in manualVitals array with timestamp.
+	•	Define data structure:json"manualVitals": [
+	•	  {
+	•	    "timestamp": "2026-04-09T10:00:00Z",
+	•	    "systolic": 120,
+	•	    "diastolic": 80,
+	•	    "heartRate": 72,
+	•	    "weight": 70,
+	•	    "height": 175,
+	•	    "bloodGlucose": 95,
+	•	    "spo2": 98,
+	•	    "temperature": 36.6,
+	•	    "respiratoryRate": 16
+	•	  }
+	•	]
+	•	Display history of manual entries: Show list of past entries with date/time and key values, with ability to delete individual entries.
+	•	Validation: Show inline error messages for values outside clinical norms (e.g., systolic < 60 or > 250).
+
+5. Documents (PDF, Word, Images, Spreadsheets)
+Description: Simulate document upload and OCR processing. User selects files, and mock data extraction returns structured health information.
+Tasks:
+	•	Create document upload UI:
+	◦	Drag-and-drop zone or "Browse" button accepting .pdf, .docx, .xlsx, .jpg, .png.
+	◦	Display list of uploaded documents with name, type, upload date, and processing status.
+	•	Mock document processing:
+	◦	On file selection, show "Processing..." spinner for 2 seconds.
+	◦	Simulate extraction by generating mock data based on file name hints (e.g., "lab_result.pdf" adds a mock lab result).
+	◦	Store document metadata and extracted data in documents array.
+	•	Define data structure:json"documents": [
+	•	  {
+	•	    "id": "uuid-1",
+	•	    "fileName": "lab_result_march.pdf",
+	•	    "fileType": "application/pdf",
+	•	    "uploadedAt": "2026-04-09T10:00:00Z",
+	•	    "extractedData": {
+	•	      "type": "lab",
+	•	      "summary": "HbA1c 7.2%, LDL 110 mg/dL",
+	•	      "rawText": "Mock OCR text..."
+	•	    }
+	•	  }
+	•	]
+	•	Document viewer: Clicking a document opens a modal with extracted summary and mock "original" content.
+
+6. Audio (Voice Notes / Doctor Visit Recordings)
+Description: Simulate audio recording and transcription. User records or uploads audio, and mock transcription returns text summary.
+Tasks:
+	•	Create audio recording UI:
+	◦	"Record" button (uses browser MediaRecorder API for actual recording, but transcription is mocked).
+	◦	Option to upload audio file (.mp3, .wav, .m4a).
+	◦	Display list of recordings with timestamp and duration.
+	•	Mock transcription:
+	◦	After recording or upload, show "Transcribing..." for 2 seconds.
+	◦	Return a hardcoded mock transcript (e.g., "Doctor discussed blood pressure management and suggested follow-up in 3 months.").
+	◦	Store audio metadata and transcript in audioRecordings array.
+	•	Define data structure:json"audioRecordings": [
+	•	  {
+	•	    "id": "uuid-1",
+	•	    "fileName": "recording_20260409.m4a",
+	•	    "duration": 124,
+	•	    "recordedAt": "2026-04-09T10:00:00Z",
+	•	    "transcript": "Mock transcript text...",
+	•	    "summary": "Brief AI summary of the conversation."
+	•	  }
+	•	]
+	•	Audio player: Click to play recording using HTML5 audio element.
+
+7. Text Notes
+Description: Free-text input for symptoms or health concerns. Mock NLP extracts keywords and stores structured observations.
+Tasks:
+	•	Create text note input:
+	◦	Large textarea for user to type symptoms/notes.
+	◦	"Save Note" button triggers mock processing.
+	•	Mock NLP extraction:
+	◦	Show "Analyzing..." spinner for 1 second.
+	◦	Parse text for keywords (e.g., "headache", "fever", "cough") and create mock extracted entities.
+	◦	Store raw text and extracted data in textNotes array.
+	•	Define data structure:json"textNotes": [
+	•	  {
+	•	    "id": "uuid-1",
+	•	    "rawText": "I've had a headache for two days and a mild fever.",
+	•	    "createdAt": "2026-04-09T10:00:00Z",
+	•	    "extracted": {
+	•	      "symptoms": ["headache", "fever"],
+	•	      "duration": "2 days",
+	•	      "severity": "mild"
+	•	    }
+	•	  }
+	•	]
+	•	Display note history: List of past notes with timestamp and extracted symptom tags.
+
+8. Scan Documents (Camera / Image Upload)
+Description: Simulate scanning paper documents via camera or image upload. Mock OCR extracts structured data similar to document upload.
+Tasks:
+	•	Create scan UI:
+	◦	"Take Photo" button (accesses device camera via navigator.mediaDevices or falls back to file upload on unsupported browsers).
+	◦	"Upload Image" button for existing photos.
+	◦	Display preview of captured/selected image.
+	•	Mock scan processing:
+	◦	After image capture/selection, show "Scanning & Extracting..." spinner for 2 seconds.
+	◦	Generate mock extracted data (similar to document processing) and store in scannedDocuments array.
+	•	Define data structure: Same as documents array, but with additional scanMethod: "camera" | "upload".
+	•	Preview and confirm: Allow user to review extracted data before saving (mock confirmation step).
+
+9. Data Source Tab Dashboard
+Description: Main view that aggregates all data sources and displays connection status and last sync times.
+Tasks:
+	•	Create grid/list of data sources:
+	◦	Each source as a card with icon, name, connection status badge (Connected / Not Connected), and "Manage" button linking to individual source view.
+	◦	Show overall data freshness summary (e.g., "Last updated: 2 hours ago").
+	•	Implement navigation: Use React Router for individual source configuration pages.
+	•	Add global sync simulation: "Sync All Sources" button triggers refresh for all connected sources sequentially with loading states.
+
+10. State Management
+Tasks:
+	•	Extend medavize_mock_db structure to include all new data source sections (ehrData, appleHealthData, googleHealthData, manualVitals, documents, audioRecordings, textNotes, scannedDocuments).
+	•	Create React Context or Zustand store to provide data and actions (connect, disconnect, sync, add entry) across components.
+	•	Implement persistence: Load from localStorage on app mount, save on every state change.
+
+11. Acceptance Criteria (Data Source Tab)
+
+
+ID
+Criteria
+AC1
+User can view all eight data sources with connection status.
+AC2
+EHR connection shows provider search and mock consent flow.
+AC3
+Apple/Google Health connect via mock permission modals.
+AC4
+Manual vitals form validates input and saves entries.
+AC5
+Document upload triggers mock processing and displays extracted summary.
+AC6
+Audio recording works in browser and returns mock transcript.
+AC7
+Text notes are saved with mock keyword extraction.
+AC8
+Camera scan (or image upload) simulates OCR extraction.
+AC9
+All data persists across page reloads.
+AC10
+"Reset Demo Data" button clears all sources to initial state.

@@ -1,0 +1,149 @@
+1. Overview
+This feature enables a new user to create an account and complete a guided onboarding sequence within the PWA prototype. All data is stored locally in the browser (localStorage or IndexedDB) using hardcoded mock responses; no actual API calls are made. The flow must simulate the business logic of the full Medavize application as defined in the proposal.
+2. User Stories
+	•	As a new user, I want to sign up using my email or phone number so that I can access the application.
+	•	As a new user, I want to see a clear onboarding sequence that explains the app's value and collects essential profile information.
+	•	As a returning user, I want to log in using previously provided credentials so that I can resume my session.
+3. Functional Requirements
+3.1. Signup Screen
+	•	Fields:
+	◦	Full Name (text, required)
+	◦	Email (email format, required) or Phone Number (numeric, required) – toggle selection via radio/segmented control.
+	◦	Password (minimum 8 characters, at least one letter and one number, required)
+	◦	Confirm Password (must match Password, required)
+	◦	Checkbox: "I agree to the Terms of Service and Privacy Policy" (required, with links to static policy pages).
+	•	Action: "Create Account" button.
+	•	Alternative: "Sign in with Google" and "Sign in with Apple" buttons (these will be mocked; clicking triggers a simulated OAuth flow that returns hardcoded user profile data).
+3.2. Login Screen
+	•	Fields: Email/Phone, Password.
+	•	Action: "Log In" button.
+	•	Alternative: OAuth buttons as above.
+	•	Mock Behavior: Credentials are validated against a hardcoded in‑memory map of existing users (initially empty; seeded with a demo user on first launch). Successful login routes to the dashboard or resumes onboarding if incomplete.
+3.3. Onboarding Sequence (Multi‑Step)
+After successful signup, the user is guided through a series of screens. Progress is tracked locally.
+
+
+Step
+Screen Title
+Description
+User Action
+Mock Logic
+1
+Welcome
+Brief value proposition with illustration.
+"Next"
+None
+2
+Data Sources Overview
+Explains what data can be connected (EHR, Apple/Google Health, manual entry).
+"Continue"
+None
+3
+Connect Apple Health
+Prompts user to sync Apple Health data.
+"Connect" (simulated) or "Skip for now"
+Clicking "Connect" shows a mock permission dialog then stores a flag appleHealthConnected: true.
+4
+Connect Google Health
+Same as above for Android users; conditionally shown based on user‑agent or a prior device selection.
+"Connect" or "Skip"
+Stores googleHealthConnected: true.
+5
+Manual Vitals Entry
+Allows user to input baseline vitals: Blood Pressure (Systolic/Diastolic), Heart Rate, Weight, Height.
+Input fields with validation, "Save & Continue"
+Stores vitals as FHIR‑like observations in local storage.
+6
+Notification Permission
+Asks user to allow push notifications.
+"Enable Notifications" or "Not Now"
+Simulates browser notification permission prompt and stores preference.
+7
+Subscription Trial
+Displays a paywall screen offering 1‑month free trial, then $9.99/month.
+"Start Free Trial" or "Restore Purchases"
+Clicking "Start Free Trial" stores subscriptionStatus: 'trial' with an expiry date 30 days in future. No actual payment processing.
+	•	Onboarding Completion: After the final step, the user is marked as onboardingCompleted: true and redirected to the main dashboard.
+4. Data Model (Local Storage)
+All data is stored under a single key medavize_mock_db with the following structure:
+json
+{
+  "users": [
+    {
+      "id": "uuid-1",
+      "fullName": "John Doe",
+      "email": "john@example.com",
+      "phone": null,
+      "password": "hashed_mock_value", // In mock, store plain text but never use in production
+      "createdAt": "2026-04-09T10:00:00Z"
+    }
+  ],
+  "currentUserId": "uuid-1",
+  "onboarding": {
+    "completed": true,
+    "stepsCompleted": [1,2,3,4,5,6,7],
+    "appleHealthConnected": true,
+    "googleHealthConnected": false,
+    "notificationsEnabled": true
+  },
+  "vitals": {
+    "bloodPressure": { "systolic": 120, "diastolic": 80, "unit": "mmHg" },
+    "heartRate": { "value": 72, "unit": "bpm" },
+    "weight": { "value": 70, "unit": "kg" },
+    "height": { "value": 175, "unit": "cm" }
+  },
+  "subscription": {
+    "status": "trial", // "trial", "active", "expired", "none"
+    "trialEndDate": "2026-05-09T10:00:00Z",
+    "plan": "monthly" // or "annual"
+  }
+}
+5. Validation Rules (Client‑Side)
+	•	Email: Must match standard email regex /\S+@\S+\.\S+/.
+	•	Phone: Minimum 10 digits, allow formatting.
+	•	Password: Minimum 8 chars, at least one letter and one number.
+	•	Password confirmation: Must match password field.
+	•	Vitals:
+	◦	Systolic: 60–250 mmHg
+	◦	Diastolic: 40–150 mmHg
+	◦	Heart Rate: 30–200 bpm
+	◦	Weight: 20–500 kg
+	◦	Height: 50–300 cm
+	•	Terms Checkbox: Must be checked.
+6. UI/UX Requirements
+	•	Responsive Design: Must work on mobile and tablet screen sizes (PWA).
+	•	Step Indicator: Onboarding screens display a progress bar or step count (e.g., "Step 3 of 7").
+	•	Skip Option: Steps 3, 4, and 6 must allow skipping without breaking the flow.
+	•	Persistent State: If the user closes the browser during onboarding, they resume at the last incomplete step upon returning.
+	•	Mock OAuth Simulation: Clicking "Sign in with Google" immediately populates the signup form with hardcoded demo data (e.g., "Demo User", "demo@example.com") and proceeds as if authenticated.
+7. Acceptance Criteria
+
+
+ID
+Criteria
+AC1
+User can sign up with email and password; data persists locally.
+AC2
+User can log in with previously created credentials.
+AC3
+OAuth buttons simulate a successful sign‑in flow without actual redirects.
+AC4
+Onboarding steps are sequential; user cannot skip to later steps except where explicitly allowed.
+AC5
+All form fields show inline validation errors and prevent submission until valid.
+AC6
+Vitals entry accepts only numeric values within clinical ranges and displays friendly error messages.
+AC7
+Free trial button sets a 30‑day trial period and unlocks dashboard access.
+AC8
+Onboarding state is saved after each step; reloading the page resumes at the correct step.
+AC9
+The entire flow works offline and without any network requests.
+AC10
+Terms and Privacy Policy links open static HTML pages included in the PWA bundle.
+8. Out of Scope for This Prototype
+	•	Actual OAuth integration with Google/Apple.
+	•	Payment processing (subscription is mocked).
+	•	Real health data syncing (Apple HealthKit, Google Health Connect).
+	•	Backend API calls, user session management beyond local storage.
+	•	Password encryption/hashing (stored as plain text for demo purposes only; clearly marked as mock).
