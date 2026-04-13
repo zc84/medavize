@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import {
   Database, Activity, Smartphone, Stethoscope,
-  FileText, Mic, Type, Camera, RefreshCw, ChevronRight,
+  FileText, Mic, Type, Camera, ChevronRight,
   CheckCircle, RotateCcw
 } from 'lucide-react'
 import {
@@ -23,7 +23,6 @@ interface DataSourceStatus {
 
 export function DataSources() {
   const navigate = useNavigate()
-  const [isSyncing, setIsSyncing] = useState(false)
   
   const [dataSources, setDataSources] = useState<DataSourceStatus[]>([
     { id: 'ehr', name: 'EHR (Particle Health)', icon: <Database className="w-6 h-6" />, connected: false, lastSynced: null, count: 0, color: 'bg-blue-500' },
@@ -62,14 +61,6 @@ export function DataSources() {
     loadDataSources()
   }, [])
 
-  const handleSyncAll = async () => {
-    setIsSyncing(true)
-    // Simulate sync delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    loadDataSources()
-    setIsSyncing(false)
-  }
-
   const handleReset = () => {
     if (confirm('Reset all demo data? This will clear all data sources.')) {
       localStorage.removeItem('medavize_mock_db')
@@ -103,16 +94,14 @@ export function DataSources() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-[#f4f8fb] relative">
-      {/* Header */}
-      <div className="bg-gradient-to-b from-[#0a3d62] to-[#0077cc] px-5 pt-12 pb-6 rounded-b-3xl">
+    <div className="min-h-full flex flex-col bg-white relative">
+      {/* Header - Black */}
+      <header className="bg-black px-5 py-4">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Data Sources</h1>
-            <p className="text-[#e8f4fd] text-sm opacity-80 mt-1">
-              Manage your health connections
-            </p>
-          </div>
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
+            <img src="/logo-white.png" alt="Medavize" className="w-8 h-8 object-contain" />
+            <h1 className="text-xl font-bold text-white">Data Sources</h1>
+          </Link>
           <button
             onClick={() => navigate('/dashboard')}
             className="p-2 bg-white/10 hover:bg-white/20 text-white rounded-xl transition"
@@ -120,63 +109,55 @@ export function DataSources() {
             <ChevronRight className="w-5 h-5 rotate-180" />
           </button>
         </div>
-        
+      </header>
+
+      {/* Content */}
+      <div className="flex-1 bg-white px-5 py-6 overflow-y-auto pb-24">
         {/* Summary Card */}
-        <div className="mt-6 bg-white/10 backdrop-blur-sm rounded-xl p-4">
+        <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl p-5 mb-6 border border-emerald-200">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 rounded-xl p-2.5">
-                <Database className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-xs text-white/70">Connected</p>
-                <p className="text-lg font-bold text-white">
-                  {dataSources.filter(s => s.connected).length}/{dataSources.length}
-                </p>
-              </div>
+            <div>
+              <h2 className="text-lg font-bold text-foreground mb-1">Connected Sources</h2>
+              <p className="text-sm text-muted-foreground">Manage your health data connections</p>
             </div>
             <button
-              onClick={handleSyncAll}
-              disabled={isSyncing}
-              className="flex items-center gap-2 px-3 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg text-sm font-medium transition disabled:opacity-50"
+              onClick={handleReset}
+              className="bg-white border border-emerald-300 text-emerald-700 hover:bg-emerald-50 px-4 py-2 rounded-lg transition text-sm font-medium flex items-center gap-2"
             >
-              <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
-              {isSyncing ? 'Syncing...' : 'Sync All'}
+              <RotateCcw className="w-4 h-4" />
+              Reset All
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-24">
         {/* Data Sources List */}
         <div className="space-y-3">
           {dataSources.map((source) => (
             <button
               key={source.id}
               onClick={() => handleManage(source.id)}
-              className="w-full bg-white rounded-xl border border-[#d0dce8] p-4 flex items-center gap-4 hover:shadow-md transition active:scale-[0.98]"
+              className="w-full bg-white rounded-xl border border-border p-4 flex items-center gap-4 hover:shadow-card transition active:scale-[0.98]"
             >
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                source.connected ? 'bg-[#0077cc]/10 text-[#0077cc]' : 'bg-[#e8f0f7] text-[#6b7c93]'
+                source.connected ? 'bg-emerald-100 text-emerald-600' : 'bg-neutral-100 text-muted-foreground'
               }`}>
                 {source.icon}
               </div>
               
               <div className="flex-1 text-left">
-                <h3 className="font-semibold text-[#0d1b2a] text-sm">{source.name}</h3>
-                <p className="text-xs text-[#6b7c93] mt-0.5">
+                <h3 className="font-semibold text-foreground text-sm">{source.name}</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {source.connected ? `${source.count} items • ${formatLastSync(source.lastSynced)}` : 'Not connected'}
                 </p>
               </div>
               
               <div className="flex items-center gap-2">
                 {source.connected ? (
-                  <CheckCircle className="w-5 h-5 text-[#2ecc71]" />
+                  <CheckCircle className="w-5 h-5 text-emerald-600" />
                 ) : (
-                  <div className="w-5 h-5 rounded-full border-2 border-[#d0dce8]" />
+                  <div className="w-5 h-5 rounded-full border-2 border-border" />
                 )}
-                <ChevronRight className="w-5 h-5 text-[#6b7c93]" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
               </div>
             </button>
           ))}
@@ -185,7 +166,7 @@ export function DataSources() {
         {/* Reset Button */}
         <button
           onClick={handleReset}
-          className="mt-6 w-full flex items-center justify-center gap-2 py-3 text-[#6b7c93] hover:text-[#0077cc] transition"
+          className="mt-6 w-full flex items-center justify-center gap-2 py-3 text-muted-foreground hover:text-emerald-600 transition"
         >
           <RotateCcw className="w-4 h-4" />
           <span className="text-sm">Reset Demo Data</span>

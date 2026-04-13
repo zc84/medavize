@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import {
   Mic, Trash2, ChevronLeft, Upload, Loader2
 } from 'lucide-react'
@@ -112,50 +112,57 @@ export function AudioPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      {/* Header */}
-      <div className="bg-navy-900 px-6 pt-8 pb-12">
+    <div className="min-h-screen bg-white">
+      {/* Header - Black */}
+      <header className="bg-black px-5 py-4">
         <div className="max-w-4xl mx-auto">
-          <button
-            onClick={() => navigate('/data-sources')}
-            className="flex items-center text-white hover:text-teal-300 transition mb-4"
-          >
-            <ChevronLeft className="w-5 h-5 mr-1" />
-            Back to Data Sources
-          </button>
-          <div className="flex items-center gap-4">
-            <div className="bg-purple-500 rounded-xl p-3">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => navigate('/data-sources')}
+              className="flex items-center text-white hover:text-emerald-400 transition"
+            >
+              <ChevronLeft className="w-5 h-5 mr-1" />
+              Back
+            </button>
+            <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
+              <img src="/logo-white.png" alt="Medavize" className="w-8 h-8 object-contain" />
+              <span className="text-xl font-bold text-white">medavize</span>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Content */}
+      <div className="bg-neutral-100 px-5 py-10">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="bg-emerald-500 rounded-xl p-3">
               <Mic className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Audio Recordings</h1>
-              <p className="text-navy-200">Record and transcribe doctor visits</p>
+              <h1 className="text-3xl font-bold text-foreground">Audio Recordings</h1>
+              <p className="text-muted-foreground">Record and transcribe doctor visits</p>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Content */}
-      <div className="px-6 -mt-6">
-        <div className="max-w-4xl mx-auto">
           {/* Recorder */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          <div className="bg-white rounded-2xl shadow-card p-6 mb-6">
             <div className="text-center">
               {isRecording ? (
                 <div className="mb-6">
                   <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
                     <div className="w-8 h-8 bg-white rounded-sm" />
                   </div>
-                  <p className="text-3xl font-mono text-neutral-900">{formatDuration(recordingDuration)}</p>
-                  <p className="text-neutral-500 mt-1">Recording...</p>
+                  <p className="text-3xl font-mono text-foreground">{formatDuration(recordingDuration)}</p>
+                  <p className="text-muted-foreground mt-1">Recording...</p>
                 </div>
               ) : (
                 <div className="mb-6">
-                  <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Mic className="w-10 h-10 text-purple-600" />
+                  <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Mic className="w-10 h-10 text-emerald-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-neutral-900">Record Audio</h3>
-                  <p className="text-neutral-500">Capture doctor visits or health notes</p>
+                  <h3 className="text-lg font-semibold text-foreground">Record Audio</h3>
+                  <p className="text-muted-foreground">Capture doctor visits or health notes</p>
                 </div>
               )}
 
@@ -171,13 +178,13 @@ export function AudioPage() {
                   <button
                     onClick={startRecording}
                     disabled={isProcessing}
-                    className="px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition disabled:opacity-50"
+                    className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition disabled:opacity-50"
                   >
                     Start Recording
                   </button>
                 )}
                 
-                <label className="px-6 py-3 border border-neutral-300 hover:bg-neutral-50 rounded-lg transition cursor-pointer">
+                <label className="px-6 py-3 border border-border hover:bg-neutral-50 rounded-lg transition cursor-pointer">
                   <Upload className="w-5 h-5 inline mr-2" />
                   Upload Audio
                   <input
@@ -190,7 +197,7 @@ export function AudioPage() {
               </div>
 
               {isProcessing && (
-                <div className="mt-4 flex items-center justify-center gap-2 text-purple-600">
+                <div className="mt-4 flex items-center justify-center gap-2 text-emerald-600">
                   <Loader2 className="w-5 h-5 animate-spin" />
                   <span>Transcribing audio...</span>
                 </div>
@@ -199,28 +206,28 @@ export function AudioPage() {
           </div>
 
           {/* Recordings List */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-lg font-semibold text-neutral-900 mb-4">
+          <div className="bg-white rounded-2xl shadow-card p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               Recordings ({recordings.length})
             </h2>
             
             {recordings.length === 0 ? (
               <div className="text-center py-12">
-                <Mic className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
-                <p className="text-neutral-500">No recordings yet.</p>
+                <Mic className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                <p className="text-muted-foreground">No recordings yet.</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {recordings.map((rec) => (
-                  <div key={rec.id} className="border border-neutral-200 rounded-xl p-4">
+                  <div key={rec.id} className="border border-border rounded-xl p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="bg-purple-100 rounded-lg p-2">
-                          <Mic className="w-5 h-5 text-purple-600" />
+                        <div className="bg-emerald-50 rounded-lg p-2">
+                          <Mic className="w-5 h-5 text-emerald-600" />
                         </div>
                         <div>
-                          <h3 className="font-medium text-neutral-900">{rec.fileName}</h3>
-                          <p className="text-sm text-neutral-500">
+                          <h3 className="font-medium text-foreground">{rec.fileName}</h3>
+                          <p className="text-sm text-muted-foreground">
                             {new Date(rec.recordedAt).toLocaleString()} • {formatDuration(rec.duration)}
                           </p>
                         </div>
@@ -228,21 +235,21 @@ export function AudioPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleDelete(rec.id)}
-                          className="p-2 text-neutral-400 hover:text-red-600 transition"
+                          className="p-2 text-muted-foreground hover:text-red-600 transition"
                         >
                           <Trash2 className="w-5 h-5" />
                         </button>
                       </div>
                     </div>
                     
-                    <div className="bg-purple-50 rounded-lg p-3 mb-2">
-                      <p className="text-sm text-purple-900 font-medium mb-1">AI Summary</p>
-                      <p className="text-sm text-purple-700">{rec.summary}</p>
+                    <div className="bg-emerald-50 rounded-lg p-3 mb-2">
+                      <p className="text-sm text-emerald-900 font-medium mb-1">AI Summary</p>
+                      <p className="text-sm text-emerald-700">{rec.summary}</p>
                     </div>
                     
                     <div className="bg-neutral-50 rounded-lg p-3">
-                      <p className="text-sm text-neutral-600 font-medium mb-1">Transcript</p>
-                      <p className="text-sm text-neutral-700">{rec.transcript}</p>
+                      <p className="text-sm text-muted-foreground font-medium mb-1">Transcript</p>
+                      <p className="text-sm text-foreground">{rec.transcript}</p>
                     </div>
                   </div>
                 ))}

@@ -14,7 +14,7 @@ export function BottomNav({ activeTab = 'health' }: BottomNavProps) {
   ] as const;
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-[#d0dce8] px-4 py-2 flex justify-around items-center z-40">
+    <div className="absolute bottom-0 left-0 right-0 bg-black px-4 py-2 flex justify-around items-center z-40">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -26,13 +26,13 @@ export function BottomNav({ activeTab = 'health' }: BottomNavProps) {
           >
             <Icon
               className={`w-6 h-6 ${
-                isActive ? 'text-[#0077cc]' : 'text-[#6b7c93]'
+                isActive ? 'text-emerald-400' : 'text-neutral-400'
               }`}
               strokeWidth={isActive ? 2.5 : 2}
             />
             <span
               className={`text-xs font-medium ${
-                isActive ? 'text-[#0077cc]' : 'text-[#6b7c93]'
+                isActive ? 'text-emerald-400' : 'text-neutral-400'
               }`}
             >
               {tab.label}

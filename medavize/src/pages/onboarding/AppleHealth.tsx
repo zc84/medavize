@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { Smartphone, Check, Loader2 } from 'lucide-react'
 
@@ -9,6 +9,11 @@ export function AppleHealthStep() {
   const [isConnecting, setIsConnecting] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
 
+  // Scroll to top on mount
+  useEffect(() => {
+    document.getElementById('app-content')?.scrollTo(0, 0)
+  }, [])
+
   const handleConnect = () => {
     setIsConnecting(true)
     // Simulate connection
@@ -17,72 +22,85 @@ export function AppleHealthStep() {
       setIsConnected(true)
       updateOnboarding(3, { appleHealthConnected: true })
       setTimeout(() => {
+        document.getElementById('app-content')?.scrollTo(0, 0)
         navigate('/onboarding/google-health')
       }, 1000)
     }, 1500)
   }
 
   const handleSkip = () => {
+    document.getElementById('app-content')?.scrollTo(0, 0)
     updateOnboarding(3)
     navigate('/onboarding/google-health')
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 flex flex-col">
-      {/* Progress */}
-      <div className="bg-navy-900 px-6 py-4">
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Header - Black */}
+      <header className="bg-black px-5 py-4">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
+            <img src="/logo-white.png" alt="Medavize" className="w-8 h-8 object-contain" />
+            <span className="text-xl font-bold text-white">medavize</span>
+          </Link>
+          <span className="text-white text-sm font-medium">Step 3 of 7</span>
+        </div>
+      </header>
+
+      {/* Progress Bar */}
+      <div className="bg-neutral-100 px-5 py-3 border-b border-neutral-200">
         <div className="max-w-md mx-auto">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-white font-semibold">Step 3 of 7</span>
-            <span className="text-navy-300 text-sm">Apple Health</span>
+            <span className="text-muted-foreground text-sm font-medium">Apple Health</span>
+            <span className="text-emerald-600 text-sm font-semibold">42%</span>
           </div>
-          <div className="h-2 bg-navy-800 rounded-full">
-            <div className="h-full w-[42%] bg-teal-500 rounded-full transition-all"></div>
+          <div className="h-2 bg-white rounded-full">
+            <div className="h-full w-[42%] bg-emerald-600 rounded-full transition-all"></div>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
+      <div className="flex-1 bg-neutral-100 flex flex-col items-center justify-center px-5 py-10">
         <div className="max-w-md w-full text-center">
           <div className="flex justify-center mb-6">
-            <div className="bg-gradient-to-br from-navy-600 to-navy-800 rounded-full p-6">
+            <div className="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-full p-6">
               <Smartphone className="w-12 h-12 text-white" />
             </div>
           </div>
 
-          <h1 className="text-3xl font-bold text-neutral-900 mb-4">
+          <h1 className="text-3xl font-bold text-foreground mb-4">
             Connect Apple Health
           </h1>
-          <p className="text-neutral-600 mb-8">
+          <p className="text-muted-foreground mb-8">
             Sync your health data from your iPhone to get a complete picture of your vitals.
           </p>
 
           {/* Mock Permission Dialog */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8 text-left">
-            <div className="bg-navy-900 px-4 py-3">
+          <div className="bg-white rounded-xl shadow-card overflow-hidden mb-8 text-left">
+            <div className="bg-black px-4 py-3">
               <p className="text-white font-semibold">"Medavize" Would Like to Access:</p>
             </div>
             <div className="p-4 space-y-3">
               <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-teal-600" />
-                <span className="text-neutral-700">Heart Rate</span>
+                <Check className="w-5 h-5 text-emerald-600" />
+                <span className="text-foreground">Heart Rate</span>
               </div>
               <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-teal-600" />
-                <span className="text-neutral-700">Blood Pressure</span>
+                <Check className="w-5 h-5 text-emerald-600" />
+                <span className="text-foreground">Blood Pressure</span>
               </div>
               <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-teal-600" />
-                <span className="text-neutral-700">Steps</span>
+                <Check className="w-5 h-5 text-emerald-600" />
+                <span className="text-foreground">Steps</span>
               </div>
               <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-teal-600" />
-                <span className="text-neutral-700">Sleep Analysis</span>
+                <Check className="w-5 h-5 text-emerald-600" />
+                <span className="text-foreground">Sleep Analysis</span>
               </div>
               <div className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-teal-600" />
-                <span className="text-neutral-700">Weight</span>
+                <Check className="w-5 h-5 text-emerald-600" />
+                <span className="text-foreground">Weight</span>
               </div>
             </div>
           </div>
@@ -91,7 +109,7 @@ export function AppleHealthStep() {
             <button
               onClick={handleConnect}
               disabled={isConnecting || isConnected}
-              className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-4 rounded-xl transition disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 rounded-full transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
             >
               {isConnecting ? (
                 <>
@@ -111,7 +129,7 @@ export function AppleHealthStep() {
             <button
               onClick={handleSkip}
               disabled={isConnecting}
-              className="w-full bg-transparent text-neutral-500 font-semibold py-3 rounded-xl transition hover:text-neutral-700"
+              className="w-full bg-transparent text-muted-foreground font-semibold py-3 rounded-full transition hover:text-foreground"
             >
               Skip for now
             </button>

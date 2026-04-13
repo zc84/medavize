@@ -1,10 +1,23 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { BottomNav } from './BottomNav';
 
 interface MobileFrameProps {
   children: React.ReactNode;
 }
 
 export function MobileFrame({ children }: MobileFrameProps) {
+  const location = useLocation()
+
+  const getActiveTab = () => {
+    const path = location.pathname
+    if (path === '/dashboard') return 'health'
+    if (path === '/data' || path.startsWith('/data-sources')) return 'data'
+    if (path === '/quick-actions' || path === '/add-visit') return 'doctor'
+    if (path === '/profile') return 'profile'
+    return 'health'
+  }
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-100 p-4 sm:p-8">
       {/* iPhone Device Frame */}
@@ -44,9 +57,9 @@ export function MobileFrame({ children }: MobileFrameProps) {
             </div>
 
             {/* Screen content */}
-            <div className="w-full h-full bg-[#f4f8fb] overflow-hidden relative">
+            <div className="w-full h-full bg-white overflow-hidden relative flex flex-col">
               {/* Status bar area */}
-              <div className="h-12 w-full flex items-end justify-between px-6 pb-1 text-xs font-semibold text-gray-900 z-40 relative">
+              <div className="h-12 w-full flex items-end justify-between px-6 pb-1 text-xs font-semibold text-gray-900 z-40 relative flex-shrink-0">
                 <span>9:41</span>
                 <div className="flex items-center gap-1">
                   {/* Signal bars */}
@@ -72,8 +85,13 @@ export function MobileFrame({ children }: MobileFrameProps) {
               </div>
 
               {/* App content */}
-              <div className="h-[calc(100%-48px)] overflow-y-auto overflow-x-hidden">
+              <div id="app-content" className="flex-1 overflow-y-auto overflow-x-hidden pb-20">
                 {children}
+              </div>
+
+              {/* Bottom Navigation */}
+              <div className="absolute bottom-0 left-0 right-0 z-50">
+                <BottomNav activeTab={getActiveTab()} />
               </div>
 
               {/* Home indicator */}

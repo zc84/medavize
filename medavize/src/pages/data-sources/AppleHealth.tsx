@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import {
   Activity, Heart, Footprints, Moon, Activity as BloodPressure,
   CheckCircle, X, RefreshCw, ChevronLeft, Smartphone
@@ -73,44 +73,51 @@ export function AppleHealthPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      {/* Header */}
-      <div className="bg-navy-900 px-6 pt-8 pb-12">
+    <div className="min-h-screen bg-white">
+      {/* Header - Black */}
+      <header className="bg-black px-5 py-4">
         <div className="max-w-4xl mx-auto">
-          <button
-            onClick={() => navigate('/data-sources')}
-            className="flex items-center text-white hover:text-teal-300 transition mb-4"
-          >
-            <ChevronLeft className="w-5 h-5 mr-1" />
-            Back to Data Sources
-          </button>
           <div className="flex items-center gap-4">
-            <div className="bg-pink-500 rounded-xl p-3">
+            <button
+              onClick={() => navigate('/data-sources')}
+              className="flex items-center text-white hover:text-emerald-400 transition"
+            >
+              <ChevronLeft className="w-5 h-5 mr-1" />
+              Back
+            </button>
+            <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
+              <img src="/logo-white.png" alt="Medavize" className="w-8 h-8 object-contain" />
+              <span className="text-xl font-bold text-white">medavize</span>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Content */}
+      <div className="bg-neutral-100 px-5 py-10">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="bg-emerald-500 rounded-xl p-3">
               <Activity className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Apple Health</h1>
-              <p className="text-navy-200">Sync with Apple HealthKit</p>
+              <h1 className="text-3xl font-bold text-foreground">Apple Health</h1>
+              <p className="text-muted-foreground">Sync with Apple HealthKit</p>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Content */}
-      <div className="px-6 -mt-6">
-        <div className="max-w-4xl mx-auto">
           {healthData.connected ? (
             <div className="space-y-6">
               {/* Connected Status */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white rounded-2xl shadow-card p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-4">
-                    <div className="bg-green-100 rounded-full p-2">
-                      <CheckCircle className="w-6 h-6 text-green-600" />
+                    <div className="bg-emerald-100 rounded-full p-2">
+                      <CheckCircle className="w-6 h-6 text-emerald-600" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold text-neutral-900">Connected</h2>
-                      <p className="text-neutral-500">
+                      <h2 className="text-xl font-semibold text-foreground">Connected</h2>
+                      <p className="text-muted-foreground">
                         Last synced: {new Date(healthData.lastSynced!).toLocaleString()}
                       </p>
                     </div>
@@ -119,7 +126,7 @@ export function AppleHealthPage() {
                     <button
                       onClick={handleSync}
                       disabled={isSyncing}
-                      className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition disabled:opacity-50"
+                      className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition disabled:opacity-50"
                     >
                       <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
                       {isSyncing ? 'Syncing...' : 'Sync Now'}
@@ -139,28 +146,28 @@ export function AppleHealthPage() {
                   {vitals.map((vital, i) => (
                     <div key={i} className={`${vital.bg} rounded-xl p-4`}>
                       <div className={`${vital.color} mb-2`}>{vital.icon}</div>
-                      <p className="text-sm text-neutral-600">{vital.label}</p>
-                      <p className="text-2xl font-bold text-neutral-900">{vital.value}</p>
-                      <p className="text-xs text-neutral-500">{vital.unit}</p>
+                      <p className="text-sm text-muted-foreground">{vital.label}</p>
+                      <p className="text-2xl font-bold text-foreground">{vital.value}</p>
+                      <p className="text-xs text-muted-foreground">{vital.unit}</p>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-              <div className="bg-pink-100 rounded-full p-4 w-fit mx-auto mb-4">
-                <Smartphone className="w-12 h-12 text-pink-600" />
+            <div className="bg-white rounded-2xl shadow-card p-8 text-center">
+              <div className="bg-emerald-50 rounded-full p-4 w-fit mx-auto mb-4">
+                <Smartphone className="w-12 h-12 text-emerald-600" />
               </div>
-              <h2 className="text-xl font-semibold text-neutral-900 mb-2">
+              <h2 className="text-xl font-semibold text-foreground mb-2">
                 Connect Apple Health
               </h2>
-              <p className="text-neutral-600 mb-6 max-w-md mx-auto">
+              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                 Sync your health data from Apple HealthKit including heart rate, steps, sleep, and blood pressure.
               </p>
               <button
                 onClick={handleConnect}
-                className="px-6 py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-lg transition"
+                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition"
               >
                 Connect Apple Health
               </button>
@@ -174,45 +181,45 @@ export function AppleHealthPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl max-w-md w-full p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-pink-100 rounded-full p-2">
-                <Activity className="w-6 h-6 text-pink-600" />
+              <div className="bg-emerald-50 rounded-full p-2">
+                <Activity className="w-6 h-6 text-emerald-600" />
               </div>
-              <h3 className="text-xl font-semibold text-neutral-900">
+              <h3 className="text-xl font-semibold text-foreground">
                 Apple Health Permissions
               </h3>
             </div>
-            <p className="text-neutral-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               Medavize would like to access the following health data:
             </p>
             <ul className="space-y-2 mb-6">
-              <li className="flex items-center gap-2 text-neutral-700">
-                <CheckCircle className="w-4 h-4 text-teal-600" />
+              <li className="flex items-center gap-2 text-foreground">
+                <CheckCircle className="w-4 h-4 text-emerald-600" />
                 Heart Rate
               </li>
-              <li className="flex items-center gap-2 text-neutral-700">
-                <CheckCircle className="w-4 h-4 text-teal-600" />
+              <li className="flex items-center gap-2 text-foreground">
+                <CheckCircle className="w-4 h-4 text-emerald-600" />
                 Steps & Activity
               </li>
-              <li className="flex items-center gap-2 text-neutral-700">
-                <CheckCircle className="w-4 h-4 text-teal-600" />
+              <li className="flex items-center gap-2 text-foreground">
+                <CheckCircle className="w-4 h-4 text-emerald-600" />
                 Sleep Analysis
               </li>
-              <li className="flex items-center gap-2 text-neutral-700">
-                <CheckCircle className="w-4 h-4 text-teal-600" />
+              <li className="flex items-center gap-2 text-foreground">
+                <CheckCircle className="w-4 h-4 text-emerald-600" />
                 Blood Pressure
               </li>
             </ul>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowPermission(false)}
-                className="flex-1 py-3 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition"
+                className="flex-1 py-3 border border-border rounded-lg hover:bg-neutral-50 transition"
               >
                 Don't Allow
               </button>
               <button
                 onClick={handleAllow}
                 disabled={isConnecting}
-                className="flex-1 py-3 bg-pink-500 hover:bg-pink-600 text-white rounded-lg transition disabled:opacity-50"
+                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition disabled:opacity-50"
               >
                 {isConnecting ? 'Connecting...' : 'Allow'}
               </button>

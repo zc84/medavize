@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import {
   Stethoscope, Plus, Trash2, ChevronLeft, Save, Activity
 } from 'lucide-react'
@@ -85,53 +85,62 @@ export function ManualVitalsPage() {
   }
 
   const inputClass = (field: string) => `
-    w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500
-    ${errors[field] ? 'border-red-300' : 'border-neutral-300'}
+    w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 bg-white text-foreground
+    ${errors[field] ? 'border-red-300' : 'border-border'}
   `
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      {/* Header */}
-      <div className="bg-navy-900 px-6 pt-8 pb-12">
+    <div className="min-h-screen bg-white">
+      {/* Header - Black */}
+      <header className="bg-black px-5 py-4">
         <div className="max-w-4xl mx-auto">
-          <button
-            onClick={() => navigate('/data-sources')}
-            className="flex items-center text-white hover:text-teal-300 transition mb-4"
-          >
-            <ChevronLeft className="w-5 h-5 mr-1" />
-            Back to Data Sources
-          </button>
           <div className="flex items-center justify-between">
+            <button
+              onClick={() => navigate('/data-sources')}
+              className="flex items-center text-white hover:text-emerald-400 transition"
+            >
+              <ChevronLeft className="w-5 h-5 mr-1" />
+              Back
+            </button>
+            <div className="flex items-center gap-2">
+              <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
+                <img src="/logo-white.png" alt="Medavize" className="w-8 h-8 object-contain" />
+                <span className="text-xl font-bold text-white">medavize</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Content */}
+      <div className="bg-neutral-100 px-5 py-10">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
-              <div className="bg-teal-500 rounded-xl p-3">
+              <div className="bg-emerald-500 rounded-xl p-3">
                 <Stethoscope className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">Manual Vitals</h1>
-                <p className="text-navy-200">Record your health measurements</p>
+                <h1 className="text-3xl font-bold text-foreground">Manual Vitals</h1>
+                <p className="text-muted-foreground">Record your health measurements</p>
               </div>
             </div>
             <button
               onClick={() => setShowForm(!showForm)}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition"
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition"
             >
               <Plus className="w-4 h-4" />
               {showForm ? 'Cancel' : 'Add Entry'}
             </button>
           </div>
-        </div>
-      </div>
 
-      {/* Content */}
-      <div className="px-6 -mt-6">
-        <div className="max-w-4xl mx-auto">
           {/* Entry Form */}
           {showForm && (
-            <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-              <h2 className="text-lg font-semibold text-neutral-900 mb-4">New Vital Signs Entry</h2>
+            <div className="bg-white rounded-2xl shadow-card p-6 mb-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">New Vital Signs Entry</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm text-neutral-600 mb-1">Systolic (mmHg)</label>
+                  <label className="block text-sm text-muted-foreground mb-1">Systolic (mmHg)</label>
                   <input
                     type="number"
                     value={formData.systolic}
@@ -142,7 +151,7 @@ export function ManualVitalsPage() {
                   {errors.systolic && <p className="text-xs text-red-600 mt-1">{errors.systolic}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-neutral-600 mb-1">Diastolic (mmHg)</label>
+                  <label className="block text-sm text-muted-foreground mb-1">Diastolic (mmHg)</label>
                   <input
                     type="number"
                     value={formData.diastolic}
@@ -153,7 +162,7 @@ export function ManualVitalsPage() {
                   {errors.diastolic && <p className="text-xs text-red-600 mt-1">{errors.diastolic}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-neutral-600 mb-1">Heart Rate (bpm)</label>
+                  <label className="block text-sm text-muted-foreground mb-1">Heart Rate (bpm)</label>
                   <input
                     type="number"
                     value={formData.heartRate}
@@ -164,37 +173,37 @@ export function ManualVitalsPage() {
                   {errors.heartRate && <p className="text-xs text-red-600 mt-1">{errors.heartRate}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-neutral-600 mb-1">Weight (kg)</label>
+                  <label className="block text-sm text-muted-foreground mb-1">Weight (kg)</label>
                   <input
                     type="number"
                     value={formData.weight}
                     onChange={(e) => setFormData({...formData, weight: e.target.value})}
-                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 bg-white text-foreground"
                     placeholder="70"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-neutral-600 mb-1">Height (cm)</label>
+                  <label className="block text-sm text-muted-foreground mb-1">Height (cm)</label>
                   <input
                     type="number"
                     value={formData.height}
                     onChange={(e) => setFormData({...formData, height: e.target.value})}
-                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 bg-white text-foreground"
                     placeholder="175"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-neutral-600 mb-1">Blood Glucose (mg/dL)</label>
+                  <label className="block text-sm text-muted-foreground mb-1">Blood Glucose (mg/dL)</label>
                   <input
                     type="number"
                     value={formData.bloodGlucose}
                     onChange={(e) => setFormData({...formData, bloodGlucose: e.target.value})}
-                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 bg-white text-foreground"
                     placeholder="95"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-neutral-600 mb-1">SpO2 (%)</label>
+                  <label className="block text-sm text-muted-foreground mb-1">SpO2 (%)</label>
                   <input
                     type="number"
                     value={formData.spo2}
@@ -205,7 +214,7 @@ export function ManualVitalsPage() {
                   {errors.spo2 && <p className="text-xs text-red-600 mt-1">{errors.spo2}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-neutral-600 mb-1">Temperature (C)</label>
+                  <label className="block text-sm text-muted-foreground mb-1">Temperature (C)</label>
                   <input
                     type="number"
                     step="0.1"
@@ -217,12 +226,12 @@ export function ManualVitalsPage() {
                   {errors.temperature && <p className="text-xs text-red-600 mt-1">{errors.temperature}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm text-neutral-600 mb-1">Respiratory Rate</label>
+                  <label className="block text-sm text-muted-foreground mb-1">Respiratory Rate</label>
                   <input
                     type="number"
                     value={formData.respiratoryRate}
                     onChange={(e) => setFormData({...formData, respiratoryRate: e.target.value})}
-                    className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 bg-white text-foreground"
                     placeholder="16"
                   />
                 </div>
@@ -230,7 +239,7 @@ export function ManualVitalsPage() {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 {isSaving ? 'Saving...' : 'Save Entry'}
@@ -239,19 +248,19 @@ export function ManualVitalsPage() {
           )}
 
           {/* History */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-lg font-semibold text-neutral-900 mb-4">Entry History</h2>
+          <div className="bg-white rounded-2xl shadow-card p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-4">Entry History</h2>
             {vitals.length === 0 ? (
               <div className="text-center py-12">
-                <Activity className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
-                <p className="text-neutral-500">No entries yet. Add your first vital signs measurement.</p>
+                <Activity className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                <p className="text-muted-foreground">No entries yet. Add your first vital signs measurement.</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {vitals.map((entry) => (
-                  <div key={entry.id} className="border border-neutral-200 rounded-xl p-4">
+                  <div key={entry.id} className="border border-border rounded-xl p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm text-neutral-500">
+                      <span className="text-sm text-muted-foreground">
                         {new Date(entry.timestamp).toLocaleString()}
                       </span>
                       <button
