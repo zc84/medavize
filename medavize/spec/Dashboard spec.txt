@@ -1,2 +1,210 @@
-1. remove user icon from the header
-2. move Data Sources, Vitals Recorded ...
+Prototype Dashboard Specification – Medavize MVE
+1. Purpose
+After user onboarding, the dashboard is the main screen. It must simulate an AI‑powered health insights engine using static, randomised, or conditionally displayed mock content. The goal is to demonstrate the intended experience without building a real LLM backend.
+
+2. Screen Layout (top to bottom)
+The dashboard is a vertically scrollable mobile screen. It contains the following sections:
+
+Section	Description
+Header	Humanoid avatar icon + dynamic one‑line “AI insight” (hero message).
+Insight Cards	Horizontally scrollable row of 2–4 cards, each showing a health insight with a possible action button.
+Doctor Visit Prep Teaser	A card that summarises upcoming visit preparation (if a visit is scheduled in the prototype) or prompts the user to schedule one.
+Recent Data Feedback	A small banner that appears only when the user has just added a new data source or uploaded a document.
+Ask the AI	A text input field with suggested prompt chips, returning mock answers.
+Footer Navigation	Three fixed tabs: Data Sources, Doctor Prep, Profile.
+The footer is always visible; the content above scrolls independently.
+
+3. Detailed Component Behaviour (Mock / Prototype Mode)
+3.1 Header with Hero Insight
+Avatar: Simple humanoid illustration (neutral, happy, or thoughtful expression – can be static for prototype).
+
+Hero text: One short sentence (max 20 words).
+Example: “Your sleep & heart rate are improving together. Keep it up!”
+
+Behaviour:
+
+On first launch, a default hero line is shown.
+
+When the user taps a “Refresh” icon (optional, next to avatar), a new random hero line is selected from a predefined list of 5–7 messages.
+
+No actual data analysis is performed.
+
+3.2 Insight Cards
+Number: 2–4 cards, horizontally scrollable.
+
+Each card contains:
+
+Title (e.g., “Heart trend”, “Lab reminder”, “From your audio note”)
+
+Body text (one sentence insight)
+
+Optional action label (e.g., “See trend”, “Add to visit prep”, “Log meal”)
+
+Mock behaviour:
+
+Cards are pre‑defined in a local array.
+
+The set of visible cards can be conditionally shown based on which data sources the user pretended to connect during onboarding.
+
+Example: If user tapped “Connect Apple Health” → show heart rate card.
+
+If user uploaded a PDF → show lab card.
+
+If user recorded an audio note → show audio insight card.
+
+Tapping an action button shows a simple alert or navigates to a placeholder screen (e.g., “Trend chart – prototype”).
+
+Refresh: The “Refresh insights” action (see 3.1) also shuffles the card order and optionally picks different pre‑defined cards.
+
+3.3 Doctor Visit Prep Teaser
+Appearance: A prominent card below the insight row.
+
+Content:
+
+A summary line: “You have 2 insights ready for your next doctor visit.”
+
+A suggested question: “Should I adjust my blood pressure meds based on evening readings?”
+
+Button: “Review full document” (navigates to the Doctor Prep screen).
+
+Mock logic:
+
+If the prototype includes a “mock appointment date” (e.g., set in user profile or always 7 days from today), the teaser shows active content.
+
+If no appointment exists, show a prompt: “Schedule a doctor visit to see preparation tips.”
+
+All questions and summaries are hardcoded or randomly selected from a small pool.
+
+3.4 Recent Data Feedback Banner
+Visibility: Only appears for a few seconds after the user adds a new data source or uploads a document via the Data Sources tab.
+
+Content:
+
+Example: “✅ Your uploaded lab report is processed. LDL is higher than last time.”
+
+Implementation for prototype:
+
+A global event (or state flag) is set when the user returns from the Data Sources screen.
+
+The banner shows a random “feedback” message from a predefined list, then auto‑dismisses after 4 seconds.
+
+3.5 Ask the AI Input
+UI:
+
+Text input field with placeholder: “Ask me anything about your health…”
+
+Below it, 2–3 chip buttons:
+
+“Summarise my last 3 days”
+
+“What should I ask my cardiologist?”
+
+“Spot any concerning trends?”
+
+Behaviour:
+
+When the user types a question or taps a chip, a mock response appears below the input (or in a chat‑bubble style).
+
+Mock response logic:
+
+For predefined keywords (“summarise”, “cardiologist”, “trends”), return a canned but plausible answer.
+
+For any other input, return a generic message: “This is a prototype. Connect real health data to receive personalised answers.”
+
+All responses are generated locally – no API call.
+
+3.6 Footer Navigation Tabs
+Each tab corresponds to a separate screen (outside the dashboard). Their behaviour for the prototype:
+
+Tab	Content (mock)
+Data Sources	List of possible sources (Apple Health, Google Health, Manual entry, Upload PDF, Audio recording). Each item toggles a “connected” flag. Upload triggers the “Recent Data Feedback” banner on return to dashboard.
+Doctor Prep	Static document showing: summary of mock insights, list of questions for doctor, current medications (editable placeholder). Sharing options (share as PDF, send to doctor) show a success alert.
+Profile	User details (name, email), subscription status (one month free, then monthly/annual), app version, sign out button.
+4. Mock Data & Variation Rules
+To make the prototype feel adaptive (as if driven by AI), define the following mock data pools and simple rules:
+
+Component	Pool size	Selection logic
+Hero messages	6–8	Random on each “refresh” or dashboard load.
+Insight cards	6 distinct cards	Always show a random subset of 2–4 cards. Cards can be “pinned” by category (e.g., heart card shown only if “Apple Health” mock‑connected).
+Prep teaser questions	5	Randomly pick one when the dashboard loads.
+Feedback messages	4	Randomly pick one when triggered.
+Ask AI responses	3 mapped + 1 default	Map exact phrases or keywords (case‑insensitive).
+State persistence (optional for prototype):
+
+Store mock “connected sources” in local storage (e.g., browser localStorage or mobile equivalent).
+
+This allows the dashboard to show different cards based on those flags across sessions.
+
+5. User Flow & Edge Cases (Prototype)
+5.1 First launch after onboarding
+Dashboard shows default hero, 3 random cards, prep teaser (if mock appointment exists), and Ask AI input.
+
+No feedback banner (nothing new added yet).
+
+5.2 Adding a data source
+User goes to Data Sources tab, taps “Connect Apple Health” (mock).
+
+App shows a fake success message.
+
+Returning to dashboard: the “Recent Data Feedback” banner appears with a message like “Apple Health connected. Your heart rate data is now being analysed.”
+
+The insight cards now must include at least one card related to heart rate (e.g., “Heart trend” card) – enforced by simple conditional logic in the card selection.
+
+5.3 Uploading a document
+From Data Sources, user selects “Upload PDF” and picks any file.
+
+The prototype does not process the file; it only records that an upload happened.
+
+On return to dashboard, feedback banner shows a lab‑related insight (e.g., “Your uploaded lab report shows Vitamin D low.”).
+
+The insight cards also include a lab‑related card for the remainder of the session.
+
+5.4 No data at all (skip onboarding)
+If the user has not connected any source nor uploaded anything, the hero message changes to: “Connect your first data source to see health insights.”
+
+Insight cards are replaced by a single placeholder card: “No data yet – tap Data Sources to begin.”
+
+Ask the AI responds with: “Please connect health data first.”
+
+Prep teaser shows: “Add health records to prepare for doctor visits.”
+
+6. Success Criteria for the Prototype
+The dashboard must demonstrate the following to stakeholders (without real LLM):
+
+A humanoid avatar + simple‑language insight (hero).
+
+Visual cards that appear personalised based on user actions (connecting sources, uploading).
+
+A clear path to doctor visit preparation.
+
+Immediate feedback after adding data.
+
+A conversational “Ask AI” that responds intelligently (within mock limits).
+
+Footer navigation that links to the other key MVE features.
+
+7. Limitations & Assumptions (to be documented)
+No real AI or LLM is used – all content is pre‑written.
+
+No actual health data processing occurs.
+
+“Connecting” a data source is a UI simulation only.
+
+File uploads are not parsed or stored.
+
+Responses from “Ask the AI” are keyword‑based.
+
+This prototype is suitable for user testing, investor demos, and design validation, but not for production.
+
+8. Implementation Notes for Developers (non‑technical summary)
+Build one scrollable screen with the sections described.
+
+Store all mock messages and cards in a local JSON file or constants.
+
+Use simple conditional logic (if‑else) to show/hide cards based on mock user flags.
+
+Provide a “refresh” action (button or pull‑to‑refresh) that randomises the content.
+
+The footer tabs are separate screens with static content or simple forms.
+
+No backend, no API, no database required.

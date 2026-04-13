@@ -25,6 +25,7 @@ import { Profile } from './pages/Profile'
 import { Data } from './pages/Data'
 import { AddVisit } from './pages/AddVisit'
 import { QuickActions } from './pages/QuickActions'
+import { AIInsights } from './pages/AIInsights'
 
 // Data Sources
 import { DataSources } from './pages/DataSources'
@@ -70,6 +71,7 @@ function AppContent() {
         <Route path="/data" element={<PrivateRoute><Data /></PrivateRoute>} />
         <Route path="/add-visit" element={<PrivateRoute><AddVisit /></PrivateRoute>} />
         <Route path="/quick-actions" element={<PrivateRoute><QuickActions /></PrivateRoute>} />
+        <Route path="/ai-insights" element={<PrivateRoute><AIInsights /></PrivateRoute>} />
         
         {/* Data Sources Routes (Private) */}
         <Route path="/data-sources" element={<PrivateRoute><DataSources /></PrivateRoute>} />

@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
-import { Heart, Database, Stethoscope, User } from 'lucide-react';
+import { Database, Stethoscope, User, Sparkles, Home as HomeIcon } from 'lucide-react';
 
 interface BottomNavProps {
-  activeTab?: 'health' | 'data' | 'doctor' | 'profile';
+  activeTab?: 'dashboard' | 'data-sources' | 'doctor-prep' | 'profile' | 'ai-insights';
 }
 
-export function BottomNav({ activeTab = 'health' }: BottomNavProps) {
+export function BottomNav({ activeTab = 'dashboard' }: BottomNavProps) {
   const tabs = [
-    { id: 'health', label: 'Health', icon: Heart, path: '/dashboard' },
-    { id: 'data', label: 'Data', icon: Database, path: '/data' },
-    { id: 'doctor', label: 'Doctor', icon: Stethoscope, path: '/quick-actions' },
+    { id: 'dashboard', label: 'Dashboard', icon: HomeIcon, path: '/dashboard' },
+    { id: 'data-sources', label: 'Data Sources', icon: Database, path: '/data-sources' },
+    { id: 'ai-insights', label: 'AI Insights', icon: Sparkles, path: '/ai-insights' },
+    { id: 'doctor-prep', label: 'Doctor Prep', icon: Stethoscope, path: '/quick-actions' },
     { id: 'profile', label: 'Profile', icon: User, path: '/profile' },
   ] as const;
 
@@ -22,7 +23,7 @@ export function BottomNav({ activeTab = 'health' }: BottomNavProps) {
           <Link
             key={tab.id}
             to={tab.path}
-            className="flex flex-col items-center gap-1 py-1 px-3"
+            className="flex items-center justify-center py-2 px-3"
           >
             <Icon
               className={`w-6 h-6 ${
@@ -30,13 +31,6 @@ export function BottomNav({ activeTab = 'health' }: BottomNavProps) {
               }`}
               strokeWidth={isActive ? 2.5 : 2}
             />
-            <span
-              className={`text-xs font-medium ${
-                isActive ? 'text-emerald-400' : 'text-neutral-400'
-              }`}
-            >
-              {tab.label}
-            </span>
           </Link>
         );
       })}

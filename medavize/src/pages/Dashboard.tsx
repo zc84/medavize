@@ -1,72 +1,96 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Activity, Calendar, LogOut, User, Database, ChevronRight } from 'lucide-react'
+import { LogOut, Heart, Moon, AlertTriangle, X, Sparkles, Activity, Upload, Calendar, FileText } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import {
+  INSIGHT_CARDS,
+  FEEDBACK_MESSAGES,
+  type InsightCard
+} from '../constants/mockDashboardData'
 
 export function Dashboard() {
   const { logout } = useAuth()
+  const [insightCards, setInsightCards] = useState<InsightCard[]>([])
+  const [feedbackBanner, setFeedbackBanner] = useState<string | null>(null)
+  const [connectedSources, setConnectedSources] = useState<string[]>([])
+  const [showAITip, setShowAITip] = useState(true)
+  const [currentCardIndex, setCurrentCardIndex] = useState(0)
 
-  const quickActions = [
-    {
-      title: 'Data Sources',
-      description: 'Connect EHR, wearables, and import health data',
-      icon: Database,
-      path: '/data-sources',
-      color: 'bg-emerald-50',
-      iconColor: 'text-emerald-600'
-    },
-    {
-      title: 'Health Vitals',
-      description: 'Track your vitals and health metrics',
-      icon: Activity,
-      path: '/data',
-      color: 'bg-emerald-50',
-      iconColor: 'text-emerald-600'
-    },
-    {
-      title: 'Quick Actions',
-      description: 'Add visits, record vitals, upload documents',
-      icon: Calendar,
-      path: '/quick-actions',
-      color: 'bg-emerald-50',
-      iconColor: 'text-emerald-600'
-    },
-    {
-      title: 'Profile',
-      description: 'Manage your account and settings',
-      icon: User,
-      path: '/profile',
-      color: 'bg-emerald-50',
-      iconColor: 'text-emerald-600'
+  // Scroll to top on mount
+  useEffect(() => {
+    document.getElementById('app-content')?.scrollTo(0, 0)
+  }, [])
+
+  // Load connected sources from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('medavize_connected_sources')
+    if (stored) {
+      setConnectedSources(JSON.parse(stored))
     }
-  ]
+  }, [])
+
+  // Check for recent data feedback
+  useEffect(() => {
+    const recentData = localStorage.getItem('medavize_recent_data')
+    if (recentData) {
+      // Show static message first, then random
+      setFeedbackBanner(FEEDBACK_MESSAGES[0])
+      localStorage.removeItem('medavize_recent_data')
+      
+      // Auto-dismiss after 4 seconds
+      setTimeout(() => {
+        setFeedbackBanner(null)
+      }, 4000)
+    }
+  }, [])
+
+  // Initialize insight cards
+  useEffect(() => {
+    // Always show static cards (first 3) regardless of connected sources
+    const staticCards = INSIGHT_CARDS.slice(0, 3)
+    
+    if (connectedSources.length === 0) {
+      // Show only static cards when no sources connected
+      setInsightCards(staticCards)
+    } else {
+      // Filter cards based on connected sources
+      const availableCards = INSIGHT_CARDS.filter(card => {
+        if (!card.requiredSource) return true
+        return connectedSources.includes(card.requiredSource)
+      })
+      
+      // Prioritize static cards (first 3), then shuffle remaining and select 3-4 total
+      const remainingCards = availableCards.slice(3)
+      const shuffledRemaining = [...remainingCards].sort(() => Math.random() - 0.5)
+      
+      // Combine: static cards first, then random from remaining
+      const selected = [...staticCards, ...shuffledRemaining].slice(0, Math.min(4, Math.max(3, availableCards.length)))
+      setInsightCards(selected)
+    }
+  }, [connectedSources])
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-full flex flex-col bg-neutral-100 pb-20">
       {/* Header - Black */}
       <header className="bg-black text-white px-5 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
             <img src="/logo-white.png" alt="Medavize" className="w-8 h-8 object-contain" />
             <h1 className="text-xl font-bold">medavize</h1>
           </Link>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
-              <User className="w-5 h-5 text-emerald-400" />
-            </div>
-            <button 
-              onClick={logout}
-              className="p-2 hover:bg-white/10 rounded-lg transition"
-              title="Logout"
-            >
-              <LogOut className="w-5 h-5" />
-            </button>
-          </div>
+          <button 
+            onClick={logout}
+            className="p-2 hover:bg-white/10 rounded-lg transition"
+            title="Logout"
+          >
+            <LogOut className="w-5 h-5" />
+          </button>
         </div>
       </header>
 
       {/* Premium Reminder - Yellow */}
       <div className="bg-yellow-50 border-b border-yellow-200 px-5 py-2 animate-pulse">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
@@ -84,70 +108,129 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <main className="flex-1 bg-neutral-100 overflow-y-auto">
-        <div className="max-w-6xl mx-auto px-5 py-8 pb-24">
-          {/* Welcome Section */}
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-foreground mb-1">Welcome back, John</h1>
-            <p className="text-muted-foreground">Here's an overview of your health journey</p>
-          </div>
+      {/* Welcome Message */}
+      <div className="bg-white px-5 py-4 border-b border-gray-100">
+        <h1 className="text-2xl font-bold text-foreground">Hello, John!</h1>
+        <p className="text-sm text-muted-foreground mt-1">Ready to take charge of your health today?</p>
+      </div>
 
-          {/* Quick Actions Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            {quickActions.map((action) => {
-              const Icon = action.icon
+      {/* Recent Data Feedback Banner */}
+      {feedbackBanner && (
+        <div className="bg-emerald-50 border-b border-emerald-200 px-5 py-3">
+          <p className="text-sm text-emerald-800">{feedbackBanner}</p>
+        </div>
+      )}
+
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto px-5 pt-6 pb-4">
+        {/* Insight Cards - Single Card with Pagination Dots */}
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold text-foreground mb-3">Insights</h2>
+          <div className="relative">
+            {insightCards.map((card, index) => {
+              const getIcon = () => {
+                if (card.id === 'hrv-improvement') return <Heart className="w-5 h-5 text-rose-500" />
+                if (card.id === 'sleep-quality') return <Moon className="w-5 h-5 text-indigo-500" />
+                if (card.id === 'metabolic-glucose') return <AlertTriangle className="w-5 h-5 text-amber-500" />
+                return null
+              }
+              
               return (
-                <Link
-                  key={action.title}
-                  to={action.path}
-                  className="bg-white p-5 rounded-xl shadow-card hover:shadow-lg transition group"
+                <div
+                  key={card.id}
+                  className={`bg-white rounded-xl p-4 shadow-card h-40 flex flex-col transition-opacity duration-300 ${
+                    index === currentCardIndex ? 'opacity-100' : 'hidden'
+                  }`}
                 >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className={`p-3 rounded-lg ${action.color}`}>
-                      <Icon className={`w-6 h-6 ${action.iconColor}`} />
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-emerald-600 transition" />
+                  <div className="flex items-start gap-3 mb-2">
+                    {getIcon()}
+                    <h3 className="font-semibold text-foreground">{card.title}</h3>
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-1">{action.title}</h3>
-                  <p className="text-sm text-muted-foreground">{action.description}</p>
-                </Link>
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-3 flex-1">{card.body}</p>
+                  {card.action && (
+                    <button className="text-sm text-emerald-600 font-medium hover:text-emerald-700 transition">
+                      {card.action} →
+                    </button>
+                  )}
+                </div>
               )
             })}
-          </div>
-
-          {/* Stats Section */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white p-4 rounded-xl shadow-card">
-              <div className="text-2xl font-bold text-emerald-600 mb-1">3</div>
-              <div className="text-sm text-muted-foreground">Data Sources</div>
-            </div>
-            <div className="bg-white p-4 rounded-xl shadow-card">
-              <div className="text-2xl font-bold text-emerald-600 mb-1">12</div>
-              <div className="text-sm text-muted-foreground">Vitals Recorded</div>
-            </div>
-            <div className="bg-white p-4 rounded-xl shadow-card">
-              <div className="text-2xl font-bold text-emerald-600 mb-1">5</div>
-              <div className="text-sm text-muted-foreground">Documents</div>
-            </div>
-            <div className="bg-white p-4 rounded-xl shadow-card">
-              <div className="text-2xl font-bold text-emerald-600 mb-1">2</div>
-              <div className="text-sm text-muted-foreground">Visits</div>
+            
+            {/* Pagination Dots */}
+            <div className="flex justify-center gap-2 mt-3">
+              {insightCards.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentCardIndex(index)}
+                  className={`w-2 h-2 rounded-full transition ${
+                    index === currentCardIndex ? 'bg-emerald-600' : 'bg-gray-300'
+                  }`}
+                />
+              ))}
             </div>
           </div>
         </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-black py-6 px-5">
-        <div className="max-w-6xl mx-auto text-center text-neutral-400">
-          <p className="text-sm">© 2026 Medavize. All rights reserved.</p>
-          <div className="flex justify-center gap-4 mt-2 text-sm">
-            <Link to="/terms" className="hover:text-emerald-400 transition">Terms</Link>
-            <Link to="/privacy" className="hover:text-emerald-400 transition">Privacy</Link>
+        {/* AI Daily Tips Card */}
+        {showAITip && (
+          <div className="mb-6 relative">
+            <button
+              onClick={() => setShowAITip(false)}
+              className="absolute top-2 right-2 p-1 hover:bg-white/50 rounded-lg transition"
+            >
+              <X className="w-4 h-4 text-gray-500" />
+            </button>
+            <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-5 border border-violet-200">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-violet-100 rounded-lg">
+                  <Sparkles className="w-5 h-5 text-violet-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-foreground mb-2">Heart Rate Looks Healthy</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Your average resting heart rate this week is 68 bpm, which falls within the ideal range of 60–100 bpm for adults. Consistent readings suggest stable heart function.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Quick Actions */}
+        <div>
+          <h2 className="text-sm font-semibold text-foreground mb-3">Quick Actions</h2>
+          <div className="grid grid-cols-2 gap-3">
+            <Link
+              to="/add-vital"
+              className="bg-white rounded-xl p-4 shadow-card hover:shadow-md transition flex flex-col items-center gap-2"
+            >
+              <Activity className="w-6 h-6 text-rose-500" />
+              <span className="text-sm font-medium text-foreground">Add Vital</span>
+            </Link>
+            <Link
+              to="/data"
+              className="bg-white rounded-xl p-4 shadow-card hover:shadow-md transition flex flex-col items-center gap-2"
+            >
+              <Upload className="w-6 h-6 text-blue-500" />
+              <span className="text-sm font-medium text-foreground">Upload Data</span>
+            </Link>
+            <Link
+              to="/add-visit"
+              className="bg-white rounded-xl p-4 shadow-card hover:shadow-md transition flex flex-col items-center gap-2"
+            >
+              <Calendar className="w-6 h-6 text-emerald-500" />
+              <span className="text-sm font-medium text-foreground">Record Visit</span>
+            </Link>
+            <Link
+              to="/quick-actions"
+              className="bg-white rounded-xl p-4 shadow-card hover:shadow-md transition flex flex-col items-center gap-2"
+            >
+              <FileText className="w-6 h-6 text-purple-500" />
+              <span className="text-sm font-medium text-foreground">Prep Visit</span>
+            </Link>
           </div>
         </div>
-      </footer>
+      </div>
     </div>
   )
 }

@@ -11,11 +11,12 @@ export function MobileFrame({ children }: MobileFrameProps) {
 
   const getActiveTab = () => {
     const path = location.pathname
-    if (path === '/dashboard') return 'health'
-    if (path === '/data' || path.startsWith('/data-sources')) return 'data'
-    if (path === '/quick-actions' || path === '/add-visit') return 'doctor'
+    if (path === '/dashboard') return 'dashboard'
+    if (path === '/data' || path.startsWith('/data-sources')) return 'data-sources'
+    if (path === '/ai-insights') return 'ai-insights'
+    if (path === '/quick-actions' || path === '/add-visit') return 'doctor-prep'
     if (path === '/profile') return 'profile'
-    return 'health'
+    return 'dashboard'
   }
 
   return (
