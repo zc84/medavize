@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Heart, Database, Stethoscope, User } from 'lucide-react';
 
 interface BottomNavProps {
@@ -6,10 +7,10 @@ interface BottomNavProps {
 
 export function BottomNav({ activeTab = 'health' }: BottomNavProps) {
   const tabs = [
-    { id: 'health', label: 'Health', icon: Heart },
-    { id: 'data', label: 'Data', icon: Database },
-    { id: 'doctor', label: 'Doctor', icon: Stethoscope },
-    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'health', label: 'Health', icon: Heart, path: '/dashboard' },
+    { id: 'data', label: 'Data', icon: Database, path: '/data' },
+    { id: 'doctor', label: 'Doctor', icon: Stethoscope, path: '/quick-actions' },
+    { id: 'profile', label: 'Profile', icon: User, path: '/profile' },
   ] as const;
 
   return (
@@ -18,8 +19,9 @@ export function BottomNav({ activeTab = 'health' }: BottomNavProps) {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
         return (
-          <button
+          <Link
             key={tab.id}
+            to={tab.path}
             className="flex flex-col items-center gap-1 py-1 px-3"
           >
             <Icon
@@ -35,7 +37,7 @@ export function BottomNav({ activeTab = 'health' }: BottomNavProps) {
             >
               {tab.label}
             </span>
-          </button>
+          </Link>
         );
       })}
     </div>

@@ -20,6 +20,12 @@ import { SubscriptionStep } from './pages/onboarding/Subscription'
 // Dashboard
 import { Dashboard } from './pages/Dashboard'
 
+// New Mobile UI Pages
+import { Profile } from './pages/Profile'
+import { Data } from './pages/Data'
+import { AddVisit } from './pages/AddVisit'
+import { QuickActions } from './pages/QuickActions'
+
 // Data Sources
 import { DataSources } from './pages/DataSources'
 import { EHRPage } from './pages/data-sources/EHR'
@@ -58,6 +64,12 @@ function AppContent() {
         
         {/* Dashboard (Private) */}
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        
+        {/* New Mobile UI Routes (Private) */}
+        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/data" element={<PrivateRoute><Data /></PrivateRoute>} />
+        <Route path="/add-visit" element={<PrivateRoute><AddVisit /></PrivateRoute>} />
+        <Route path="/quick-actions" element={<PrivateRoute><QuickActions /></PrivateRoute>} />
         
         {/* Data Sources Routes (Private) */}
         <Route path="/data-sources" element={<PrivateRoute><DataSources /></PrivateRoute>} />
